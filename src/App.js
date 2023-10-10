@@ -1,8 +1,8 @@
 import { FirebaseConfig } from "./config/Config"
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  onAuthStateChanged, 
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signOut,
   signInWithEmailAndPassword
 } from "firebase/auth"
@@ -45,18 +45,18 @@ function App() {
   ]
   // application states
   const [nav, setNav] = useState(NavItems)
-  const [ auth, setAuth ] = useState(false)
+  const [auth, setAuth] = useState(false)
   // authentication observer
-  onAuthStateChanged( FBauth, ( user ) => {
-    if( user ) {
+  onAuthStateChanged(FBauth, (user) => {
+    if (user) {
       // currently authentication
-      setAuth( user )
-      setNav( AuthNavItems )
+      setAuth(user)
+      setNav(AuthNavItems)
     }
     else {
       // currently unauthenticated
-      setAuth( false )
-      setNav( NavItems )
+      setAuth(false)
+      setNav(NavItems)
     }
   })
   // signing up a user
@@ -68,32 +68,39 @@ function App() {
       .catch((error) => console.log(error.message))
   }
   const logOut = () => {
-    signOut(FBauth).then(()=>{
+    signOut(FBauth).then(() => {
       // user is signed out
     })
 
   }
 
-  const signIn = ( email, password ) => {
-    signInWithEmailAndPassword( FBauth, email, password )
-    .then( () => {
-      // user is signed in
-    } )
-    .catch( (error) => { console.log(error) })
+  const signIn = (email, password) => {
+    return new Promise((resolve, reject) => {
+      signInWithEmailAndPassword(FBauth, email, password)
+        .then(() => {
+          // user is signed in
+          resolve(true)
+        })
+        .catch((error) => { 
+          console.log(error)
+          reject( error.code )
+        })
+    })
+
   }
 
   return (
     <div className="App">
       <Header items={nav} />
       <AuthContext.Provider value={auth}>
-      <Routes>
-        <Route path="/" element={<Home greeting="Hey you are at home!" />} />
-        <Route path="/about" element={<About greeting="Hey you, About this page" />} />
-        <Route path="/contact" element={<Contact greeting="Hey this your contact" />} />
-        <Route path="/signup" element={<Signup handler={signUp} />} />
-        <Route path="/signout" element={ <Signout handler={logOut} />} />
-        <Route path="/signin" element={ <Signin handler={signIn} authstate={auth}/>} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Home greeting="Hey you are at home!" />} />
+          <Route path="/about" element={<About greeting="Hey you, About this page" />} />
+          <Route path="/contact" element={<Contact greeting="Hey this your contact" />} />
+          <Route path="/signup" element={<Signup handler={signUp} />} />
+          <Route path="/signout" element={<Signout handler={logOut} />} />
+          <Route path="/signin" element={<Signin handler={signIn} authstate={auth} />} />
+        </Routes>
       </AuthContext.Provider>
     </div>
   );
