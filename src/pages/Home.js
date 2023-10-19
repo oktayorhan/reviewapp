@@ -15,7 +15,7 @@ export function Home(props) {
     }, [props.items])
 
     // collection
-    const Items = books.map((item, key ) => {
+    const Items = books.map((item, key) => {
         return (
             <Col md="4" key={key}>
                 <Card>
