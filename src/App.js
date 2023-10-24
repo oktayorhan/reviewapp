@@ -6,6 +6,7 @@ import {
   signOut,
   signInWithEmailAndPassword
 } from "firebase/auth"
+import { getStorage } from "firebase/storage"
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore"
 import { initializeApp } from "firebase/app"
 import { Routes, Route } from "react-router-dom"
@@ -23,11 +24,13 @@ import { Signin } from "./pages/Signin"
 
 //contexts
 import { AuthContext } from "./contexts/AuthContext"
+import { StorageContext } from "./contexts/StorageContext"
 
 function App() {
   const FBapp = initializeApp(FirebaseConfig)
   const FBauth = getAuth(FBapp)
   const FBdb = getFirestore(FBapp)
+  const FBstorage = getStorage(FBapp)
 
   // navigation array
   const NavItems = [
@@ -117,6 +120,7 @@ function App() {
     <div className="App">
       <Header items={nav} user={auth} />
       <AuthContext.Provider value={auth}>
+      <StorageContext.Provider value={FBstorage}>
         <Routes>
           <Route path="/" element={<Home items = {data} />} />
           <Route path="/about" element={<About greeting="Hey you, About this page" />} />
@@ -125,6 +129,7 @@ function App() {
           <Route path="/signout" element={<Signout handler={logOut} />} />
           <Route path="/signin" element={<Signin handler={signIn} authstate={auth} />} />
         </Routes>
+      </StorageContext.Provider>
       </AuthContext.Provider>
     </div>
   );
