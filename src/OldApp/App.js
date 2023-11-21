@@ -1,5 +1,4 @@
 import { FirebaseConfig } from "./config/Config"
-import { initializeApp } from "firebase/app"
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -7,17 +6,12 @@ import {
   signOut,
   signInWithEmailAndPassword
 } from "firebase/auth"
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  doc,
-  writeBatch,
-  getDoc
-} from "firebase/firestore"
 import { getStorage } from "firebase/storage"
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore"
+import { initializeApp } from "firebase/app"
 import { Routes, Route } from "react-router-dom"
 import { useState, useEffect } from "react"
+
 
 import { Header } from "./components/Header"
 import './App.css'
@@ -27,12 +21,10 @@ import { Contact } from "./pages/Contact"
 import { Signup } from "./pages/Signup"
 import { Signout } from "./pages/Signout"
 import { Signin } from "./pages/Signin"
-import { Detail } from "./pages/Detail"
 
 //contexts
 import { AuthContext } from "./contexts/AuthContext"
 import { StorageContext } from "./contexts/StorageContext"
-
 
 function App() {
   const FBapp = initializeApp(FirebaseConfig)
@@ -45,34 +37,34 @@ function App() {
     { label: "Home", link: "/" },
     { label: "About", link: "/about" },
     { label: "Contact", link: "/contact" },
-    { label: "Create Account", link: "/signup" },
-    { label: "Log in", link: "/signin" }
+    { label: "Create Account", link: "signup" },
+    { label: "Log in", link: "/signin" },
   ]
-  // navigation for authenticated user
 
+  // navigation for authenticated user
   const AuthNavItems = [
     { label: "Home", link: "/" },
     { label: "About", link: "/about" },
     { label: "Contact", link: "/contact" }
   ]
-
   // application states
   const [nav, setNav] = useState(NavItems)
   const [auth, setAuth] = useState(false)
   const [data, setData] = useState([])
-  const [fetching, setFetching] = useState(false)
+  const [ fetching , steFetching ] = useState( false )
 
-  useEffect(() => {
-    if (data.length === 0 && fetching === false) {
+  useEffect( () => {
+    if (data.length === 0 && fetching === false ) {
       readData()
-      setFetching(true)
+      steFetching( true )
     }
-  }, [data])
 
+  }, [data])
+  
   // authentication observer
   onAuthStateChanged(FBauth, (user) => {
     if (user) {
-      // currently authenticated
+      // currently authentication
       setAuth(user)
       setNav(AuthNavItems)
     }
@@ -82,9 +74,6 @@ function App() {
       setNav(NavItems)
     }
   })
-  const saySomething = (word) => {
-    alert(word)
-  }
   // signing up a user
   const signUp = (email, password) => {
     createUserWithEmailAndPassword(FBauth, email, password)
@@ -93,11 +82,11 @@ function App() {
       })
       .catch((error) => console.log(error.message))
   }
-
   const logOut = () => {
     signOut(FBauth).then(() => {
       // user is signed out
     })
+
   }
 
   const signIn = (email, password) => {
@@ -107,58 +96,40 @@ function App() {
           // user is signed in
           resolve(true)
         })
-        .catch((error) => {
+        .catch((error) => { 
           console.log(error)
-          reject(error.code)
+          reject( error.code )
         })
     })
+
   }
 
-  // function to get data
+  //  function to get data
   const readData = async () => {
-    const querySnapshot = await getDocs(collection(FBdb, "books"))
-    let listdata = []
-    querySnapshot.forEach((doc) => {
+    const querySnapshot = await getDocs( collection( FBdb, "books") )
+    let listdata = [] 
+    querySnapshot.forEach( (doc) => {
       let item = doc.data()
       item.id = doc.id
-      listdata.push(item)
-    })
-    setData(listdata)
-  }
-  // function to get a single item
-  const getDocument = async (itemId) => {
-    const docRef = doc(FBdb, "books", itemId)
-    const docSnap = await getDoc(docRef)
-    let book = docSnap.data()
-    book.id = itemId
-    return book
-  }
-  const dataBatch = async (data) => {
-    const batch = writeBatch(FBdb)
-    // loop through data
-    for (let i = 0; i < data.length; i++) {
-      const ref = doc(collection(FBdb, "books"))
-      batch.set(ref, data[i])
-    }
-    batch.commit().then((res) => console.log(res))
-  }
-
+      listdata.push( item )
+  })
+  console.log ( listdata )
+  setData( listdata)
+}
   return (
     <div className="App">
       <Header items={nav} user={auth} />
       <AuthContext.Provider value={auth}>
-        <StorageContext.Provider value={FBstorage}>
-          <Routes>
-            <Route path="#" element={<Home items={data} />} />
-            <Route path="/" element={<Home items={data} />} />
-            <Route path="/about" element={<About add={dataBatch} greeting="Hey you, this is about page!" handler={saySomething} />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/signup" element={<Signup handler={signUp} />} />
-            <Route path="/signout" element={<Signout handler={logOut} />} />
-            <Route path="/signin" element={<Signin handler={signIn} authstate={auth} />} />
-            <Route path="/detail/:id" element={<Detail handler={getDocument} />} />
-          </Routes>
-        </StorageContext.Provider>
+      <StorageContext.Provider value={FBstorage}>
+        <Routes>
+          <Route path="/" element={<Home items = {data} />} />
+          <Route path="/about" element={<About greeting="Hey you, About this page" />} />
+          <Route path="/contact" element={<Contact greeting="Hey this your contact" />} />
+          <Route path="/signup" element={<Signup handler={signUp} />} />
+          <Route path="/signout" element={<Signout handler={logOut} />} />
+          <Route path="/signin" element={<Signin handler={signIn} authstate={auth} />} />
+        </Routes>
+      </StorageContext.Provider>
       </AuthContext.Provider>
     </div>
   );

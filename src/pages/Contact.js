@@ -1,3 +1,3 @@
 export function Contact ( props ) {
-    return ( <h1>{props.greeting}</h1>) 
-} 
+  return ( <h1>Contact</h1>)
+}
