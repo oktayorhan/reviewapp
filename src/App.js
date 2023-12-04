@@ -12,7 +12,6 @@ import {
   collection,
   getDocs,
   doc,
-  writeBatch,
   getDoc
 } from "firebase/firestore"
 import { getStorage } from "firebase/storage"
@@ -32,6 +31,7 @@ import { Detail } from "./pages/Detail"
 //contexts
 import { AuthContext } from "./contexts/AuthContext"
 import { StorageContext } from "./contexts/StorageContext"
+import { FSContext } from "./contexts/FSContext"
 
 
 function App() {
@@ -126,38 +126,31 @@ function App() {
     setData(listdata)
   }
   // function to get a single item
-  const getDocument = async (itemId) => {
-    const docRef = doc(FBdb, "books", itemId)
-    const docSnap = await getDoc(docRef)
+  const getDocument = async ( itemId ) => {
+    const docRef = doc( FBdb, "books", itemId )
+    const docSnap = await getDoc( docRef )
     let book = docSnap.data()
     book.id = itemId
     return book
   }
-  const dataBatch = async (data) => {
-    const batch = writeBatch(FBdb)
-    // loop through data
-    for (let i = 0; i < data.length; i++) {
-      const ref = doc(collection(FBdb, "books"))
-      batch.set(ref, data[i])
-    }
-    batch.commit().then((res) => console.log(res))
-  }
+
 
   return (
     <div className="App">
       <Header items={nav} user={auth} />
       <AuthContext.Provider value={auth}>
         <StorageContext.Provider value={FBstorage}>
+          <FSContext.Provider value={FBdb}>
           <Routes>
-            <Route path="#" element={<Home items={data} />} />
             <Route path="/" element={<Home items={data} />} />
-            <Route path="/about" element={<About add={dataBatch} greeting="Hey you, this is about page!" handler={saySomething} />} />
+            <Route path="/about" element={<About greeting="Hey you, this is about page!" handler={saySomething} />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/signup" element={<Signup handler={signUp} />} />
             <Route path="/signout" element={<Signout handler={logOut} />} />
             <Route path="/signin" element={<Signin handler={signIn} authstate={auth} />} />
             <Route path="/detail/:id" element={<Detail handler={getDocument} />} />
           </Routes>
+          </FSContext.Provider>
         </StorageContext.Provider>
       </AuthContext.Provider>
     </div>

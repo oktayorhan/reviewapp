@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { ItemImage } from "../components/ItemImage"
 import { ReviewForm } from "../components/ReviewForm"
+import { Reviews } from "../components/Reviews"
 
 export function Detail(props) {
   const [bookData, setBookData ] = useState()
@@ -17,8 +18,8 @@ export function Detail(props) {
     }
   }, [id])
 
-  if ( bookData ) {
-    return (
+  if( bookData ) {
+    return(
       <Container>
         <Row>
           <Col>
@@ -34,17 +35,20 @@ export function Detail(props) {
             <h3>Summary</h3>
             <p>{bookData.summary}</p>
             <h3>Author</h3>
-            <p>{bookData.author}</p>
+            <p>{ bookData.author }</p>
             <h3>ISBN</h3>
             <p>ISBN10 {bookData.isbn10}</p>
             <p>ISBN13 {bookData.isbn13}</p>
-
           </Col>
         </Row>
         <Row>
           <Col>
-            <ReviewForm booktitle={bookData.book_title} />
+            <ReviewForm booktitle={bookData.book_title} bookId={bookData.id} />
           </Col>
+        </Row>
+        <Row>
+        <Col><Reviews bookId={bookData.id}/>
+        </Col>
         </Row>
       </Container>
     )
@@ -52,5 +56,5 @@ export function Detail(props) {
   else {
     return null
   }
-
+  
 }
