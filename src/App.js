@@ -48,12 +48,13 @@ function App() {
     { label: "Create Account", link: "/signup" },
     { label: "Log in", link: "/signin" }
   ]
-  // navigation for authenticated user
 
+  // navigation for authenticated user
   const AuthNavItems = [
     { label: "Home", link: "/" },
     { label: "About", link: "/about" },
-    { label: "Contact", link: "/contact" }
+    { label: "Contact", link: "/contact" },
+    { label: "Log out", link: "/signout" }
   ]
 
   // application states
@@ -67,6 +68,7 @@ function App() {
       readData()
       setFetching(true)
     }
+  
   }, [data])
 
   // authentication observer
@@ -82,7 +84,7 @@ function App() {
       setNav(NavItems)
     }
   })
-  const saySomething = (word) => {
+  const abOut = (word) => {
     alert(word)
   }
   // signing up a user
@@ -116,7 +118,7 @@ function App() {
 
   // function to get data
   const readData = async () => {
-    const querySnapshot = await getDocs(collection(FBdb, "books"))
+    const querySnapshot = await getDocs(collection(FBdb, "movies"))
     let listdata = []
     querySnapshot.forEach((doc) => {
       let item = doc.data()
@@ -127,7 +129,7 @@ function App() {
   }
   // function to get a single item
   const getDocument = async ( itemId ) => {
-    const docRef = doc( FBdb, "books", itemId )
+    const docRef = doc( FBdb, "movies", itemId )
     const docSnap = await getDoc( docRef )
     let book = docSnap.data()
     book.id = itemId
@@ -143,7 +145,7 @@ function App() {
           <FSContext.Provider value={FBdb}>
           <Routes>
             <Route path="/" element={<Home items={data} />} />
-            <Route path="/about" element={<About greeting="Hey you, this is about page!" handler={saySomething} />} />
+            <Route path="/about" element={<About handler={abOut} />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/signup" element={<Signup handler={signUp} />} />
             <Route path="/signout" element={<Signout handler={logOut} />} />

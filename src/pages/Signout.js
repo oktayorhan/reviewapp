@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 
 export function Signout( props ) {
@@ -10,13 +9,5 @@ export function Signout( props ) {
     nav("/")
   })
 
-  return(
-    <Container>
-      <Row>
-        <Col>
-        {/* Signout */}
-        </Col>
-      </Row>
-    </Container>
-  )
+  return
 }

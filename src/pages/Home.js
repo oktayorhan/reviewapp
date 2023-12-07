@@ -7,25 +7,26 @@ import { useState, useEffect, useContext } from 'react'
 import { ItemImage } from "../components/ItemImage"
 
 export function Home(props) {
-  const [books,setBooks] = useState([])
+  const [movies,setMovies] = useState([])
   
   useEffect(() => {
     console.log( props.items )
-    setBooks( props.items )
+    setMovies( props.items )
   }, [props.items])
 
 
 
-  const ItemCards = books.map( ( book, itemkey ) => {
-    const itemLink = `detail/${book.id}`
+  const ItemCards = movies.map( ( movie, itemkey ) => {
+    const itemLink = `detail/${movie.id}`
     return(
       <Col md={4} className="mb-4" key={itemkey}>
         <Card key={itemkey} className="position-relative">
           <a href={itemLink} className="position-absolute" style={{top:0, left:0, right:0,bottom:0}}>
           </a>
-          <ItemImage source={ book.cover_image} />
+          <ItemImage source={ movie.cover_image} />
           <Card.Body>
-            <Card.Title>{ book.book_title }</Card.Title>
+            <Card.Title>{ movie.movie_title } ({ movie.rating }) - { movie.year }</Card.Title>
+            <Card.Title>{ movie.genre }</Card.Title>
           </Card.Body>
         </Card>
       </Col>

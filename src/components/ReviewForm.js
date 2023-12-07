@@ -28,7 +28,7 @@ export function ReviewForm(props) {
     const submitHandler = async (event) => {
         event.preventDefault()
         const userReview = {title: title, star: star, body: review }
-        const col = collection( db, `books/${props.bookId}/reviews`)
+        const col = collection( db, `movies/${props.movieId}/reviews`)
         const ref = await addDoc( col, userReview )
         console.log( ref )
     }
@@ -36,7 +36,7 @@ export function ReviewForm(props) {
     if (auth) {
         return (
             <Form onSubmit={submitHandler} className="my-4">
-                <h3>Review {props.booktitle}</h3>
+                <h3>Review {props.movietitle}</h3>
                 <Form.Group>
                     <Form.Label>Star</Form.Label>
                     <Form.Select
@@ -50,13 +50,13 @@ export function ReviewForm(props) {
                         <option value="4">4</option>
                         <option value="5">5</option>
                     </Form.Select>
-                    <Form.Text>You have given {star} star(s)</Form.Text>
+                    <Form.Text>You rated this {star} star(s)</Form.Text>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Title</Form.Label>
                     <Form.Control
                         type="text"
-                        placeholder="I love this book"
+                        placeholder="Spellbinding!"
                         name="title"
                         onChange={(evt) => setTitle(evt.target.value)}
                     />
@@ -67,7 +67,7 @@ export function ReviewForm(props) {
                         as="textarea"
                         rows={4}
                         cols={30}
-                        placeholder="I could not put this down!"
+                        placeholder="Kept me on the edge of my seat..."
                         name="content"
                         onChange={(evt) => setReview(evt.target.value)}
                     />

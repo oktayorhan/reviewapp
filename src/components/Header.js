@@ -16,7 +16,7 @@ export function Header(props) {
   return (
     <Navbar>
       <Container>
-        <Navbar.Brand>App</Navbar.Brand>
+        <Navbar.Brand><h2>Your Movie Reviews!</h2></Navbar.Brand>
         <Nav>
           {Links}
           

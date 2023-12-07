@@ -48,8 +48,6 @@ export function Signin( props ) {
       }
     })
     .catch( (code) => {
-      //console.log(code)
-      //setErrorCode( code )
       switch(code) {
         case "auth/invalid-email" :
           setErrorCode("the email address is invalid")

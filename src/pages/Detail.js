@@ -8,46 +8,45 @@ import { ReviewForm } from "../components/ReviewForm"
 import { Reviews } from "../components/Reviews"
 
 export function Detail(props) {
-  const [bookData, setBookData ] = useState()
+  const [movieData, setMovieData ] = useState()
 
   let {id} = useParams()
 
   useEffect( () => {
-    if( !bookData ) {
-      props.handler(id).then( (book) => setBookData(book) )
+    if( !movieData ) {
+      props.handler(id).then( (movie) => setMovieData(movie) )
     }
   }, [id])
 
-  if( bookData ) {
+  if( movieData ) {
     return(
       <Container>
         <Row>
           <Col>
-            <h1>{bookData.book_title}</h1>
+            <h1>{movieData.movie_title}</h1>
           </Col>
         </Row>
         <Row>
           <Col md={4}>
-            <ItemImage source={bookData.cover_image} />
+            <ItemImage source={movieData.cover_image} />
           </Col>
           <Col md={8}>
-            <h2>More information</h2>
-            <h3>Summary</h3>
-            <p>{bookData.summary}</p>
-            <h3>Author</h3>
-            <p>{ bookData.author }</p>
-            <h3>ISBN</h3>
-            <p>ISBN10 {bookData.isbn10}</p>
-            <p>ISBN13 {bookData.isbn13}</p>
+            <h3>Overview</h3>
+            <p>{ movieData.overview }</p>
+            <h6><p>Director: { movieData.director }</p>
+            <p>Genre: { movieData.genre}</p>
+            <p>Rating: { movieData.rating}</p>
+            <p>Year: { movieData.year }</p>
+            <p>Length: { movieData.length }</p></h6>
           </Col>
         </Row>
         <Row>
           <Col>
-            <ReviewForm booktitle={bookData.book_title} bookId={bookData.id} />
+            <ReviewForm movietitle={movieData.movie_title} movieId={movieData.id} />
           </Col>
         </Row>
         <Row>
-        <Col><Reviews bookId={bookData.id}/>
+        <Col><Reviews movieId={movieData.id}/>
         </Col>
         </Row>
       </Container>

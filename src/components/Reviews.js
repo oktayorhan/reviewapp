@@ -6,42 +6,42 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { collection, query, onSnapshot } from 'firebase/firestore'
 
-export function Reviews ( props ) {
-    const db = useContext( FSContext )
+export function Reviews(props) {
+    const db = useContext(FSContext)
 
-    const[ reviews, setReviews ] = useState([])
-    const[ fetching, setFetching ] = useState( true )
-    
-    useEffect( () => {
-        if( fetching ) {
-            const q = query( collection( db, `books/${props.bookId}/reviews`))
-            const snapshot = onSnapshot( q, (snapshot) =>{
-                let bookReviews = []
-                snapshot.forEach( (item) => {
+    const [reviews, setReviews] = useState([])
+    const [fetching, setFetching] = useState(true)
+
+    useEffect(() => {
+        if (fetching) {
+            const q = query(collection(db, `movies/${props.movieId}/reviews`))
+            const snapshot = onSnapshot(q, (snapshot) => {
+                let movieReviews = []
+                snapshot.forEach((item) => {
                     let r = item.data()
                     r.id = item.id
-                    bookReviews.push(r)
+                    movieReviews.push(r)
                 })
-                setReviews( bookReviews)
+                setReviews(movieReviews)
                 setFetching(false)
             })
         }
     })
 
-    const ReviewItems = reviews.map( (item) => {
+    const ReviewItems = reviews.map((item) => {
         return (
             <Row>
                 <Col>
-                <h4>{item.title}</h4>
-                <p>(item.star) stars </p>
-                <p>(item.body)</p>
+                    <h4>{item.title}</h4>
+                    <p>{item.star} stars </p>
+                    <p>{item.body}</p>
                 </Col>
             </Row>
         )
     })
-    return(
+    return (
         <Container>
-            { ReviewItems }
+            {ReviewItems}
         </Container>
     )
 }
